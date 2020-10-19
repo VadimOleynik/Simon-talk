@@ -8,6 +8,6 @@
   outline: none;
 }
 
-.cell__active {
+.cell--active {
   border-color: black;
 }

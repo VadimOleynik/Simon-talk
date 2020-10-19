@@ -1,15 +1,39 @@
-import {ADD_STEP} from './action-types'
+import {
+    ADD_SIMON_COLOR,
+    ADD_USER_COLOR,
+    RESET_SIMON_COLORS,
+    RESET_USER_COLORS
+} from './action-types'
 
 const initialState = {
-    steps: []
+    simonColors: [],
+    userColors: []
 }
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case ADD_STEP: {
+        case ADD_SIMON_COLOR: {
             return {
                 ...state,
-                steps: [...state.steps, action.payload]
+                simonColors: [...state.simonColors, action.payload]
+            }
+        }
+        case RESET_SIMON_COLORS: {
+            return {
+                ...state,
+                simonColors: []
+            }
+        }
+        case ADD_USER_COLOR: {
+            return {
+                ...state,
+                userColors: [...state.userColors, action.payload]
+            }
+        }
+        case RESET_USER_COLORS: {
+            return {
+                ...state,
+                userColors: []
             }
         }
         default: {

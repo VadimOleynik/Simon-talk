@@ -1,1 +1,4 @@
-export const ADD_STEP = 'ADD_STEP'
+export const ADD_SIMON_COLOR = 'ADD_SIMON_COLOR'
+export const RESET_SIMON_COLORS = 'RESET_SIMON_COLORS'
+export const ADD_USER_COLOR = 'ADD_USER_COLOR'
+export const RESET_USER_COLORS = 'RESET_USER_COLORS'

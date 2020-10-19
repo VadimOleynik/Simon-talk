@@ -1,8 +1,11 @@
 import React from "react";
 import './index.css';
 
-export default function Cell ({color: backgroundColor}) {
+export default function Cell({color: backgroundColor, isActive, onClick}) {
     return (
-        <button className="cell" style={{backgroundColor}}/>
+        <button className={`cell ${isActive ? 'cell--active' : ''}`}
+                style={{backgroundColor}}
+                onClick={onClick}
+        />
     )
 }

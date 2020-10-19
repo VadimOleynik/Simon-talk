@@ -1,40 +1,92 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Cell from "../Cell"
-
 import {useSelector, useDispatch} from "react-redux"
-import {addStep} from "../../store/actions"
-
+import {
+    addSimonColor,
+    addUserColor,
+    resetSimonColors,
+    resetUserColors
+} from "../../store/actions"
 import {pickRandom} from "../../helpers"
+import './index.css';
 
-const fieldConfig = ['blue', 'red', 'green', 'yellow'];
+const COLORS = ['blue', 'red', 'green', 'yellow'];
+const SPEED = 700;
+const DELAY = 500;
 
 export default function Field() {
-    const steps = useSelector((state => state.steps));
+    const simonColors = useSelector((state => state.simonColors));
+    const userColors = useSelector((state => state.userColors));
     const dispatch = useDispatch();
+    const [activeColor, setActiveColor] = useState(null);
 
-    const play = () => {
-        generateNextStep();
-        showSteps();
+    useEffect(() => {
+        const currentColorIndex = userColors.length - 1;
+        const lastUserColor = userColors[currentColorIndex];
+        const simonColorToCheck = simonColors[currentColorIndex];
+
+        if (lastUserColor !== simonColorToCheck) {
+            dispatch(resetUserColors());
+            dispatch(resetSimonColors());
+            alert("You lose");
+        } else {
+            if (!simonColors.length) {
+                alert("Welcome to the game");
+                generateNextColor();
+            } else if (userColors.length === simonColors.length) {
+                dispatch(resetUserColors());
+                alert("Great, go to the next round");
+                generateNextColor();
+            }
+        }
+    })
+
+    const generateNextColor = () => {
+        const randomColor = pickRandom(COLORS);
+        dispatch(addSimonColor(randomColor));
     }
 
-    const generateNextStep = () => {
-        const randomCell = pickRandom(fieldConfig);
-        dispatch(addStep(randomCell));
+    const toggleColor = (color, iterator, callBack) => {
+        setTimeout(() => {
+            setActiveColor(color)
+            setTimeout(() => {
+                setActiveColor(null);
+                if (callBack) {
+                    callBack();
+                }
+            }, DELAY);
+        }, SPEED * iterator);
     }
 
-    const showSteps = () => {
-        console.log(steps);
+    const showSimonColors = () => {
+        for (let i = 0; i < simonColors.length; i++) {
+            toggleColor(simonColors[i], i);
+        }
+    }
+
+    const onCellClick = (color) => {
+        toggleColor(color, 0, () => {
+            dispatch(addUserColor(color));
+        });
     }
 
     return (
         <>
-            {
-                fieldConfig.map((color) =>
-                    <Cell key={color} color={color}/>
-                )
-            }
-            {steps.toString()}
-            <button onClick={play}>Play</button>
+            <p>Round {simonColors.length}</p>
+            <div className="field__cells">
+                {
+                    COLORS.map((color) =>
+                        <Cell key={color}
+                              color={color}
+                              isActive={activeColor === color}
+                              onClick={() => onCellClick(color)}
+                        />
+                    )
+                }
+            </div>
+            <div>
+                <button onClick={showSimonColors}>Show Simon`s colors</button>
+            </div>
         </>
     )
 }
